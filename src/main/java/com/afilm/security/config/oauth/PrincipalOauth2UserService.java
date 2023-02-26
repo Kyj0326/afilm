@@ -54,7 +54,8 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
 
         String provider = oAuth2Userinfo.getProvider(); // 구글
         String providerId = oAuth2Userinfo.getProviderId();  // 구글에서 제공하는 primary key와 같음 (null)
-        String username = provider + "-" + providerId;  // google -12213 (중복될일 없음) 안만들어줘도 됨
+        //String username = provider + "-" + providerId;  // google -12213 (중복될일 없음) 안만들어줘도 됨
+        String username = oAuth2Userinfo.getName();  // google -12213 (중복될일 없음) 안만들어줘도 됨
         String password = bCryptPasswordEncoder.encode("겟인데어");
         String email = oAuth2Userinfo.getEmail();
         String role = "ROLE_USER";

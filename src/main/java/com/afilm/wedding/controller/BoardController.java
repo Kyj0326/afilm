@@ -1,5 +1,7 @@
 package com.afilm.wedding.controller;
 
+import com.afilm.security.config.auth.PrincipalDetails;
+import com.afilm.security.model.User;
 import com.afilm.wedding.domain.Item;
 import com.afilm.wedding.domain.MarryInfo;
 import com.afilm.wedding.dto.BoardDto;
@@ -8,6 +10,8 @@ import com.afilm.wedding.service.BoardService;
 import com.afilm.wedding.service.ItemService;
 import com.afilm.wedding.service.MarryInfoService;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -31,10 +35,27 @@ public class BoardController {
     // list 경로에 요청 파라미터가 있을 경우 (?page=1), 그에 따른 페이지네이션을 수행함.
 
     @GetMapping({"", "/list"})
-    public String list(Model model, @RequestParam(value="page", defaultValue = "1") Integer pageNum) {
+    public String list(Authentication authentication,  // DI(의존성주입)
+                       @AuthenticationPrincipal PrincipalDetails userDetails,
+                       Model model, @RequestParam(value="page", defaultValue = "1") Integer pageNum) {
+
+        System.out.println("/test/login =============");
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal(); // 다운캐스팅
+        System.out.println("authentication : " + principalDetails.getUser());
+
+        // 2) @AuthenticationPrincipal 어노테이션 사용해서
+        System.out.println("userDetails:" + userDetails.getUser());
+        User user = userDetails.getUser();
+
+
+            //model.addAttribute("userImg", user.getEmail());
+
         List<BoardDto> boardList = boardService.getBoardlist(pageNum);
         Integer[] pageList = boardService.getPageList(pageNum);
+        System.out.println(user.getUsername());
 
+
+        model.addAttribute("user", user);
         model.addAttribute("boardList", boardList);
         model.addAttribute("pageList", pageList);
 
