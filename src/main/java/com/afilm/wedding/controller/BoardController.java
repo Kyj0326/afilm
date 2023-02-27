@@ -2,6 +2,7 @@ package com.afilm.wedding.controller;
 
 import com.afilm.security.config.auth.PrincipalDetails;
 import com.afilm.security.model.User;
+import com.afilm.security.repository.UserRepository;
 import com.afilm.wedding.domain.Item;
 import com.afilm.wedding.domain.MarryInfo;
 import com.afilm.wedding.dto.BoardDto;
@@ -10,6 +11,7 @@ import com.afilm.wedding.service.BoardService;
 import com.afilm.wedding.service.ItemService;
 import com.afilm.wedding.service.MarryInfoService;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -26,6 +28,8 @@ public class BoardController {
     private BoardService boardService;
     private MarryInfoService marryInfoService;
     private ItemService itemService;
+    private ModelMapper modelMapper;
+    private UserRepository userRepository;
 
     // 게시판
 
@@ -52,7 +56,7 @@ public class BoardController {
 
         List<BoardDto> boardList = boardService.getBoardlist(pageNum);
         Integer[] pageList = boardService.getPageList(pageNum);
-        System.out.println(user.getUsername());
+        System.out.println("#########################user.getUsername() :" + user.getUsername());
 
 
         model.addAttribute("user", user);
@@ -89,8 +93,12 @@ public class BoardController {
     }
 
     @PostMapping("/marry-info")
-    public String insertMarryInfo(MarryInfoDto marryInfoDto) {
-        marryInfoService.savePost(marryInfoDto);
+    public String insertMarryInfo(MarryInfoDto marryInfoDto, @AuthenticationPrincipal PrincipalDetails userDetails) {
+
+        System.out.println("###여기가두번찍히는거냐??");
+        User user = userDetails.getUser();
+
+        marryInfoService.savePost(marryInfoDto,user.getId());
         return "redirect:/board/list";
     }
 

@@ -14,7 +14,7 @@ public class MarryInfoDto {
     private String femaleName;
     private String info_1;
     private String info_2;
-    private LocalDateTime marryDate;
+    private String marryDate;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
 
@@ -32,7 +32,7 @@ public class MarryInfoDto {
 
     //
     @Builder
-    public MarryInfoDto(Long id, String maleName, String femaleName, String info_1, String info_2, LocalDateTime marryDate, LocalDateTime createdDate, LocalDateTime modifiedDate) {
+    public MarryInfoDto(Long id, String maleName, String femaleName, String info_1, String info_2, String marryDate, LocalDateTime createdDate, LocalDateTime modifiedDate) {
         this.id = id;
         this.maleName = maleName;
         this.femaleName = femaleName;

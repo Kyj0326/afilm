@@ -3,6 +3,10 @@ package com.afilm.security.controller;
 import com.afilm.security.config.auth.PrincipalDetails;
 import com.afilm.security.model.User;
 import com.afilm.security.repository.UserRepository;
+import com.afilm.wedding.dto.BoardDto;
+import com.afilm.wedding.service.BoardService;
+import com.afilm.wedding.service.ItemService;
+import com.afilm.wedding.service.MarryInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -10,9 +14,13 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
 
 @Controller
 public class IndexController {
@@ -22,6 +30,15 @@ public class IndexController {
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Autowired
+    private BoardService boardService;
+
+    @Autowired
+    private MarryInfoService marryInfoService;
+
+    @Autowired
+    private ItemService itemService;
 
     @GetMapping("/test/login")
     public @ResponseBody String loginTest(
@@ -53,10 +70,32 @@ public class IndexController {
         return "redirect:/board/list";
     }
 
+
     @GetMapping({"","/"})
-    public String index() {
-        //머스테치 기본폴더 src/main/resources/
-        // viewresolver 설정 : templates (prefix), .mustache(suffix) 생략가능
+    public String index(Authentication authentication,  // DI(의존성주입)
+                        @AuthenticationPrincipal PrincipalDetails userDetails,
+                        Model model, @RequestParam(value="page", defaultValue = "1") Integer pageNum) {
+
+        System.out.println("/test/login =============");
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal(); // 다운캐스팅
+        System.out.println("authentication : " + principalDetails.getUser());
+
+        // 2) @AuthenticationPrincipal 어노테이션 사용해서
+        System.out.println("userDetails:" + userDetails.getUser());
+        User user = userDetails.getUser();
+
+
+        //model.addAttribute("userImg", user.getEmail());
+
+        List<BoardDto> boardList = boardService.getBoardlist(pageNum);
+        Integer[] pageList = boardService.getPageList(pageNum);
+        System.out.println("#########################user.getUsername() :" + user.getUsername());
+
+
+        model.addAttribute("user", user);
+        model.addAttribute("boardList", boardList);
+        model.addAttribute("pageList", pageList);
+
         return "index"; // src/main/resources/templates/index.mustache
     }
 
