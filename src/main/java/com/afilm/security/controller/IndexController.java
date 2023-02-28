@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
-@Controller
+//@Controller
 public class IndexController {
 
     @Autowired
@@ -71,33 +71,33 @@ public class IndexController {
     }
 
 
-    @GetMapping({"","/"})
-    public String index(Authentication authentication,  // DI(의존성주입)
-                        @AuthenticationPrincipal PrincipalDetails userDetails,
-                        Model model, @RequestParam(value="page", defaultValue = "1") Integer pageNum) {
-
-        System.out.println("/test/login =============");
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal(); // 다운캐스팅
-        System.out.println("authentication : " + principalDetails.getUser());
-
-        // 2) @AuthenticationPrincipal 어노테이션 사용해서
-        System.out.println("userDetails:" + userDetails.getUser());
-        User user = userDetails.getUser();
-
-
-        //model.addAttribute("userImg", user.getEmail());
-
-        List<BoardDto> boardList = boardService.getBoardlist(pageNum);
-        Integer[] pageList = boardService.getPageList(pageNum);
-        System.out.println("#########################user.getUsername() :" + user.getUsername());
-
-
-        model.addAttribute("user", user);
-        model.addAttribute("boardList", boardList);
-        model.addAttribute("pageList", pageList);
-
-        return "index"; // src/main/resources/templates/index.mustache
-    }
+//    @GetMapping({"","/"})
+//    public String index(Authentication authentication,  // DI(의존성주입)
+//                        @AuthenticationPrincipal PrincipalDetails userDetails,
+//                        Model model, @RequestParam(value="page", defaultValue = "1") Integer pageNum) {
+//
+//        System.out.println("/test/login =============");
+//        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal(); // 다운캐스팅
+//        System.out.println("authentication : " + principalDetails.getUser());
+//
+//        // 2) @AuthenticationPrincipal 어노테이션 사용해서
+//        System.out.println("userDetails:" + userDetails.getUser());
+//        User user = userDetails.getUser();
+//
+//
+//        //model.addAttribute("userImg", user.getEmail());
+//
+//        List<BoardDto> boardList = boardService.getBoardlist(pageNum);
+//        Integer[] pageList = boardService.getPageList(pageNum);
+//        System.out.println("#########################user.getUsername() :" + user.getUsername());
+//
+//
+//        model.addAttribute("user", user);
+//        model.addAttribute("boardList", boardList);
+//        model.addAttribute("pageList", pageList);
+//
+//        return "index"; // src/main/resources/templates/index.mustache
+//    }
 
     //일반로그인, 구글로그인 둘다 PrincipalDetails로 회원정보를 받을 수 있음
     //@AuthenticationPrincipal 어노테이션은

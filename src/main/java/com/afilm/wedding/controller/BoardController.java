@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +24,7 @@ import java.util.List;
 
 @Controller
 @AllArgsConstructor
-@RequestMapping("board")    // /board 경로로 들어오는 경우 아래의 Method들로 분기될 수 있도록 설정
+//@RequestMapping("board")    // /board 경로로 들어오는 경우 아래의 Method들로 분기될 수 있도록 설정
 public class BoardController {
     private BoardService boardService;
     private MarryInfoService marryInfoService;
@@ -31,85 +32,68 @@ public class BoardController {
     private ModelMapper modelMapper;
     private UserRepository userRepository;
 
-    // 게시판
 
-    // 게시글 목록
 
-    // list 경로로 GET 메서드 요청이 들어올 경우 list 메서드와 맵핑시킴
-    // list 경로에 요청 파라미터가 있을 경우 (?page=1), 그에 따른 페이지네이션을 수행함.
+    @GetMapping("/login")
+    public String naverLogin(
+            Authentication authentication,
+            @AuthenticationPrincipal OAuth2User oauth) {
+        if(authentication==null){
+            return "redirect:/oauth2/authorization/naver";
+        }
+        return "redirect:/";
+    }
 
-    @GetMapping({"", "/list"})
-    public String list(Authentication authentication,  // DI(의존성주입)
-                       @AuthenticationPrincipal PrincipalDetails userDetails,
-                       Model model, @RequestParam(value="page", defaultValue = "1") Integer pageNum) {
 
-        System.out.println("/test/login =============");
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal(); // 다운캐스팅
-        System.out.println("authentication : " + principalDetails.getUser());
 
-        // 2) @AuthenticationPrincipal 어노테이션 사용해서
-        System.out.println("userDetails:" + userDetails.getUser());
+    @GetMapping("/")
+    public String index(@AuthenticationPrincipal PrincipalDetails userDetails,
+                        Model model) {
         User user = userDetails.getUser();
 
-
-            //model.addAttribute("userImg", user.getEmail());
-
-        List<BoardDto> boardList = boardService.getBoardlist(pageNum);
-        Integer[] pageList = boardService.getPageList(pageNum);
-        System.out.println("#########################user.getUsername() :" + user.getUsername());
-
-
         model.addAttribute("user", user);
-        model.addAttribute("boardList", boardList);
-        model.addAttribute("pageList", pageList);
 
-        return "board/list";
-    }
-
-    // 글쓰는 페이지
-
-    @GetMapping("/post")
-    public String write() {
-        return "board/write";
-    }
-
-    // 글을 쓴 뒤 POST 메서드로 글 쓴 내용을 DB에 저장
-    // 그 후에는 /list 경로로 리디렉션해준다.
-
-    @PostMapping("/post")
-    public String write(BoardDto boardDto) {
-        boardService.savePost(boardDto);
-        return "redirect:/board/list";
+        return "index";
     }
 
 
-    @GetMapping("/main")
-    public String main(Model model){
 
-        List<Item> items = itemService.allItemView();
-        model.addAttribute("items", items);
 
-        return "/main";
+
+    @GetMapping("/imgupload")
+    public String imgupload(@AuthenticationPrincipal PrincipalDetails userDetails,
+                       Model model){
+        User user = userDetails.getUser();
+        model.addAttribute("user", user);
+        return "/imgupload";
     }
 
     @PostMapping("/marry-info")
     public String insertMarryInfo(MarryInfoDto marryInfoDto, @AuthenticationPrincipal PrincipalDetails userDetails) {
-
-        System.out.println("###여기가두번찍히는거냐??");
         User user = userDetails.getUser();
-
         marryInfoService.savePost(marryInfoDto,user.getId());
-        return "redirect:/board/list";
+        return "redirect:/imgupload";
     }
 
-    // 상품 등록 (POST) - 판매자만 가능
-    @PostMapping("/item/new/pro")
-    public String itemSave(Item item, MultipartFile imgFile) throws Exception {
+    //이미지 등록
+    @PostMapping("/img/upload")
+    public String itemSave(Item item, MultipartFile imgFile,@AuthenticationPrincipal PrincipalDetails userDetails,Model model) throws Exception {
+        User user = userDetails.getUser();
 
-            itemService.saveItem(item, imgFile);
 
-            return "redirect:/board/main";
+            itemService.saveItem(item, imgFile,user);
 
+            model.addAttribute("item",user.getItems());
+            return "redirect:/main";
+
+    }
+
+    @GetMapping("/main")
+    public String getImages(@AuthenticationPrincipal PrincipalDetails userDetails,
+                       Model model){
+        User user = userDetails.getUser();
+        model.addAttribute("items",user.getItems());
+        return "/main";
     }
 
     // 게시물 상세 페이지이며, {no}로 페이지 넘버를 받는다.

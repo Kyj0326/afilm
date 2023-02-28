@@ -1,11 +1,14 @@
 package com.afilm.security.model;
 
+import com.afilm.wedding.domain.Item;
 import com.afilm.wedding.domain.MarryInfo;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity // jpa가 관리하는 것
 @Data
@@ -30,6 +33,9 @@ public class User {
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private MarryInfo marryInfo;
 
+    @OneToMany( mappedBy = "user" , fetch = FetchType.LAZY)
+    private List<Item> items = new ArrayList<>();
+
     public void setMarryInfo(MarryInfo marryInfo) {
         this.marryInfo = marryInfo;
         marryInfo.setUser(this);
@@ -44,5 +50,10 @@ public class User {
         this.provider = provider;
         this.providerId = providerId;
         this.createDate = createDate;
+    }
+
+    public void addItem(Item item){
+        items.add(item);
+        item.setUser(this);
     }
 }
