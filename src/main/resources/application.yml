@@ -33,7 +33,7 @@ spring:
     show-sql: true
     hibernate:
       format_sql: true
-      ddl-auto: create  # none, update, create, create-drop, validate
+      ddl-auto: update  # none, update, create, create-drop, validate
 
   mvc:
     hiddenmethod:

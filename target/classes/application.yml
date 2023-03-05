@@ -33,7 +33,7 @@ spring:
     show-sql: true
     hibernate:
       format_sql: true
-      ddl-auto: create  # none, update, create, create-drop, validate
+      ddl-auto: update  # none, update, create, create-drop, validate
 
   mvc:
     hiddenmethod:
@@ -53,9 +53,9 @@ spring:
             descriptor:
               sql:
                 BasicBinder: TRACE
-  thymeleaf:
-    prefix: classpath:templates/
-    check-template-location: true
-    suffix: .html
-    mode: HTML5
-    cache: false
+#  thymeleaf:
+#    prefix: classpath:templates/
+#    check-template-location: true
+#    suffix: .html
+#    mode: HTML5
+#    cache: false

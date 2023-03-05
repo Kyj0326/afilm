@@ -3,12 +3,11 @@ package com.afilm.wedding.controller;
 import com.afilm.security.config.auth.PrincipalDetails;
 import com.afilm.security.model.User;
 import com.afilm.security.repository.UserRepository;
-import com.afilm.wedding.domain.Item;
-import com.afilm.wedding.domain.MarryInfo;
+import com.afilm.wedding.domain.Images;
 import com.afilm.wedding.dto.BoardDto;
 import com.afilm.wedding.dto.MarryInfoDto;
 import com.afilm.wedding.service.BoardService;
-import com.afilm.wedding.service.ItemService;
+import com.afilm.wedding.service.ImagesService;
 import com.afilm.wedding.service.MarryInfoService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -28,7 +27,7 @@ import java.util.List;
 public class BoardController {
     private BoardService boardService;
     private MarryInfoService marryInfoService;
-    private ItemService itemService;
+    private ImagesService itemService;
     private ModelMapper modelMapper;
     private UserRepository userRepository;
 
@@ -77,13 +76,13 @@ public class BoardController {
 
     //이미지 등록
     @PostMapping("/img/upload")
-    public String itemSave(Item item, MultipartFile imgFile,@AuthenticationPrincipal PrincipalDetails userDetails,Model model) throws Exception {
+    public String itemSave(Images image, MultipartFile imgFile, @AuthenticationPrincipal PrincipalDetails userDetails, Model model) throws Exception {
         User user = userDetails.getUser();
 
 
-            itemService.saveItem(item, imgFile,user);
+            itemService.saveImages(image, imgFile,user);
 
-            model.addAttribute("item",user.getItems());
+            model.addAttribute("item",user.getImages());
             return "redirect:/main";
 
     }
@@ -92,7 +91,7 @@ public class BoardController {
     public String getImages(@AuthenticationPrincipal PrincipalDetails userDetails,
                        Model model){
         User user = userDetails.getUser();
-        model.addAttribute("items",user.getItems());
+        model.addAttribute("items",user.getImages());
         return "/main";
     }
 

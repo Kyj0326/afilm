@@ -3,9 +3,8 @@ package com.afilm.security.controller;
 import com.afilm.security.config.auth.PrincipalDetails;
 import com.afilm.security.model.User;
 import com.afilm.security.repository.UserRepository;
-import com.afilm.wedding.dto.BoardDto;
 import com.afilm.wedding.service.BoardService;
-import com.afilm.wedding.service.ItemService;
+import com.afilm.wedding.service.ImagesService;
 import com.afilm.wedding.service.MarryInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,14 +12,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.util.List;
 
 //@Controller
 public class IndexController {
@@ -38,7 +32,7 @@ public class IndexController {
     private MarryInfoService marryInfoService;
 
     @Autowired
-    private ItemService itemService;
+    private ImagesService itemService;
 
     @GetMapping("/test/login")
     public @ResponseBody String loginTest(
