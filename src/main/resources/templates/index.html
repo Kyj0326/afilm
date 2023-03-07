@@ -226,6 +226,11 @@
 
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 <script>
+
+window.onload = function () {
+
+
+}
     $(document).ready(function(){
 
         for(var i=1; i<31; i++){
@@ -238,8 +243,8 @@
                         +  "</svg>"
                         +  "<div class=\"card-body\">"
                         +  "<div class=\"filebox\">"
-                        +  "<label for=\"file1\" class=\"\" >이미지 첨부</label>"
-                        +  "<input type=\"file\" id=\"file"+i+"\" class=\"upload-hidden\" name=\"file\">"
+                        +  "<label for=\"file1\" id=\"addfile-"+i+"\" onclick=\"preview("+i+")\">이미지 첨부</label>"
+                        +  "<input type=\"file\" id=\"file"+i+"\" class=\"upload-hidden-"+i+"\" name=\"file\">"
                         +   "</div>"
                         +  "</div>"
                         +  "</div>" ;
@@ -248,7 +253,26 @@
         //파일첨부 이벤트
 
 
-        $('.upload-hidden-1').on('change', function(){
+        $('[class^="addfile"]').each(function(index){
+            index.onclick = readImage(index);
+        });
+
+
+
+
+
+        $('[class^="upload-hidden"]').change(function(){
+
+            $('[class^="upload-hidden"]').each(function(){
+            console.log("$(this)[0].id : " + $(this)[0].id ) ;
+            console.log($(this)[0] ) ;
+            console.log($(this)) ;
+                 readImage($(this)[0]); //미리보기
+            })
+         });
+
+
+        $('[class^="upload-hidden"]').on('change', function(){
             if(window.FileReader){
                 var filename = $(this)[0].files[0].name;
                 if(!validFileType(filename)){
@@ -268,15 +292,6 @@
             } else {
                 var filename = $(this).val().split('/').pop().split('\\').pop();
             }
-            console.log($(this)[0]);
-            console.log($(this).labels);
-            console.log("$(this)[i].attr('id')" + $(this)[0].id);
-                        console.log("$(this)[1]" + $(this)[1]);
-               for(var i=0; i<30; i++){
-                           console.log("$(this)[i].attr('id')" + $(this)[i].id);
-               }
-            $(this).prev().val(filename); //input upload-name 에 파일명 설정해주기
-
             readImage($(this)[0]); //미리보기
         });
     });
@@ -330,40 +345,6 @@
         popup.document.write("<style>body{margin:0px;}</style><img src='"+url+"' width='"+win_width+"'>");
     }
 
-
-
-            $('.upload-hidden-1').on('change', function(){
-            if(window.FileReader){
-                var filename = $(this)[0].files[0].name;
-                if(!validFileType(filename)){
-                    alert("허용하지 않는 확장자 파일입니다.");
-                    return false;
-                }else{
-                    if(!validFileSize($(this)[0].files[0])){
-                        alert("파일 사이즈가 10MB를 초과합니다.");
-                        return false;
-                    }else{
-                        if(!validFileNameSize(filename)){
-                            alert("파일명이 30자를 초과합니다.");
-                            return false;
-                        }
-                    }
-                }
-            } else {
-                var filename = $(this).val().split('/').pop().split('\\').pop();
-            }
-            console.log($(this)[0]);
-            console.log($(this).labels);
-            console.log("$(this)[i].attr('id')" + $(this)[0].id);
-                        console.log("$(this)[1]" + $(this)[1]);
-               for(var i=0; i<30; i++){
-                           console.log("$(this)[i].attr('id')" + $(this)[i].id);
-               }
-            $(this).prev().val(filename); //input upload-name 에 파일명 설정해주기
-
-            readImage($(this)[0]); //미리보기
-        });
-    });
 
 </script>
 </body>
