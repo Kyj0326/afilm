@@ -50,10 +50,10 @@
 
             <ul class="nav nav-tabs">
                 <li class="nav-item">
-                    <a class="nav-link active" data-toggle="tab" href="#qwe">Step 1 - 기본정보 입력</a>
+                    <a class="nav-link disabled" data-toggle="tab" href="#qwe">Step 1 - 기본정보 입력</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link disabled" data-toggle="tab" >Step 2 - 사진 업로드</a>
+                    <a class="nav-link active" data-toggle="tab" >Step 2 - 사진 업로드</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link disabled" data-toggle="tab" >Step 3 - 완료</a>
@@ -132,6 +132,17 @@
 
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 <script>
+
+<form th:action="@{/img/upload}" method="post" enctype="multipart/form-data">
+    <div class="row g-3">
+        <div class="col-12">
+            <label for="text" class="form-label">상품 이미지 업로드</label>
+            <input type="file" class="form-control" id="imgFile" name="imgFile">
+        </div>
+    </div>
+    <hr class="my-4">
+    <button class="w-100 btn btn-primary btn-lg mb-3" type="submit">상품 등록</button>
+</form>
 
     $(document).ready(function(){
 
