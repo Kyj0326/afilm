@@ -4,9 +4,11 @@ import com.afilm.security.config.auth.PrincipalDetails;
 import com.afilm.security.model.User;
 import com.afilm.security.repository.UserRepository;
 import com.afilm.wedding.domain.Image;
+import com.afilm.wedding.domain.MarryInfo;
 import com.afilm.wedding.dto.BoardDto;
 import com.afilm.wedding.dto.ImagesCreationDto;
 import com.afilm.wedding.dto.MarryInfoDto;
+import com.afilm.wedding.repository.ImageRepository;
 import com.afilm.wedding.service.BoardService;
 import com.afilm.wedding.service.ImageService;
 import com.afilm.wedding.service.MarryInfoService;
@@ -22,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @AllArgsConstructor
@@ -30,65 +33,94 @@ public class BoardController {
     private BoardService boardService;
     private MarryInfoService marryInfoService;
     private ImageService imageService;
+    private ImageRepository imageRepository;
     private ModelMapper modelMapper;
     private UserRepository userRepository;
 
 
 
-    @GetMapping("/login")
-    public String naverLogin(
+    @GetMapping("/login/new")
+    public String naverLoginNew(
             Authentication authentication,
             @AuthenticationPrincipal OAuth2User oauth) {
         if(authentication==null){
             return "redirect:/oauth2/authorization/naver";
         }
-        return "redirect:/";
+        return "redirect:/new";
     }
 
+    @GetMapping("/login/update")
+    public String naverLoginUpdate(
+            Authentication authentication,
+            @AuthenticationPrincipal OAuth2User oauth) {
+        if(authentication==null){
+            return "redirect:/oauth2/authorization/naver";
+        }
+        return "redirect:/update";
+    }
 
-
-    @GetMapping("/")
-    public String index(@AuthenticationPrincipal PrincipalDetails userDetails,
+    @GetMapping("/new")
+    public String newIndex(@AuthenticationPrincipal PrincipalDetails userDetails,
                         Model model) {
         User user = userDetails.getUser();
 
         model.addAttribute("user", user);
 
-        return "index";
+        return "new_index";
     }
 
-
-
-
-
-    @GetMapping("/imgupload")
-    public String imgupload(@AuthenticationPrincipal PrincipalDetails userDetails,
-                       Model model){
+    @GetMapping("/update")
+    public String updateIndex(@AuthenticationPrincipal PrincipalDetails userDetails,
+                        Model model) {
         User user = userDetails.getUser();
+
+        MarryInfo marryInfo = marryInfoService.getMarryInfo(user.getId());
+
+        model.addAttribute("marryInfo", marryInfo);
+
         model.addAttribute("user", user);
-        return "/img_upload";
+
+        return "update_index";
     }
+
 
     @PostMapping("/marry-info")
     public String insertMarryInfo(MarryInfoDto marryInfoDto, @AuthenticationPrincipal PrincipalDetails userDetails) {
         User user = userDetails.getUser();
         marryInfoService.savePost(marryInfoDto,user.getId());
-        return "redirect:/imgupload";
+        return "redirect:/imgupload_new";
     }
 
-    //이미지 등록
-    @PostMapping("/img/upload")
-    public String saveImage(Image image,MultipartFile imgFile, @AuthenticationPrincipal PrincipalDetails userDetails, Model model) throws Exception {
+
+    @PutMapping("/marry-info")
+    public String updateMarryInfo(MarryInfoDto marryInfoDto, @AuthenticationPrincipal PrincipalDetails userDetails) {
+        User user = userDetails.getUser();
+        marryInfoService.savePost(marryInfoDto,user.getId());
+        return "redirect:/imgupload_update";
+    }
+
+    @GetMapping("/imgupload_new")
+    public String uploadimg(@AuthenticationPrincipal PrincipalDetails userDetails,
+                            Model model){
+        User user = userDetails.getUser();
+        model.addAttribute("user", user);
+        return "/img_upload_new";
+    }
+
+    @GetMapping("/imgupload_update")
+    public String updateimg(@AuthenticationPrincipal PrincipalDetails userDetails,
+                            Model model){
+
         User user = userDetails.getUser();
 
+        List<Image> images = imageService.findByUserId(user.getId());
 
-        imageService.saveImage(image, imgFile,user);
+        model.addAttribute("images", images);
 
-            model.addAttribute("item",user.getImages());
-            return "redirect:/main";
+        model.addAttribute("user", user);
 
+        return "/img_upload_update";
     }
-
 
     //이미지 등록
     @PostMapping("/imgs/upload")
@@ -98,88 +130,55 @@ public class BoardController {
         User user = userDetails.getUser();
         String userEmail = user.getEmail();
         int idx = userEmail.indexOf("@");
-
-        String mail = userEmail.substring(idx+1);
-
+        String mail = userEmail.substring(0, idx);
         List<MultipartFile> files = new ArrayList<>();
         files.add(file1);files.add(file2);files.add(file3);files.add(file4);files.add(file5);files.add(file6);files.add(file7);files.add(file8);files.add(file9);files.add(file10);files.add(file11);files.add(file12);files.add(file13);files.add(file14);files.add(file15);files.add(file16);files.add(file17);files.add(file18);files.add(file19);files.add(file20);files.add(file21);files.add(file22);files.add(file23);files.add(file24);files.add(file25);files.add(file26);files.add(file27);files.add(file28);files.add(file29);files.add(file30);
 
-
-
-        List<Image> images = new ArrayList<>();
-        for(int i=0; i<files.size(); i++){
-            Image img = imageService.getImage(i,files.get(i),mail);
-            user.addImage(img);
-            images.add(img);
-        }
+            List<Image> images = new ArrayList<>();
+            for(int i=0; i<files.size(); i++){
+                Image img = imageService.getImage(i,files.get(i),mail);
+                user.addImage(img);
+                images.add(img);
+            }
         imageService.saveAll(images);
-
-
-//        imageService.saveAll(image.getImages());
-
-        //model.addAttribute("imageList",imageService.findByUserId(user.getId()));
-        return "redirect:/end";
-
+        return "redirect:/complete";
     }
 
 
-    @GetMapping("/end")
+    @GetMapping("/complete")
     public String getImages(@AuthenticationPrincipal PrincipalDetails userDetails,
                        Model model){
         User user = userDetails.getUser();
         model.addAttribute("user", user);
-        return "/end";
-    }
-
-    // 게시물 상세 페이지이며, {no}로 페이지 넘버를 받는다.
-    // PathVariable 애노테이션을 통해 no를 받음
-
-    @GetMapping("/post/{no}")
-    public String detail(@PathVariable("no") Long no, Model model) {
-        BoardDto boardDTO = boardService.getPost(no);
-
-        model.addAttribute("boardDto", boardDTO);
-        return "board/detail";
-    }
-
-    // 게시물 수정 페이지이며, {no}로 페이지 넘버를 받는다.
-
-    @GetMapping("/post/edit/{no}")
-    public String edit(@PathVariable("no") Long no, Model model) {
-        BoardDto boardDTO = boardService.getPost(no);
-
-        model.addAttribute("boardDto", boardDTO);
-        return "board/update";
+        return "/complete";
     }
 
     // 위는 GET 메서드이며, PUT 메서드를 이용해 게시물 수정한 부분에 대해 적용
 
-    @PutMapping("/post/edit/{no}")
-    public String update(BoardDto boardDTO) {
-        boardService.savePost(boardDTO);
+    @PutMapping("/imgs/upload")
+    public String updateImages(Image image, MultipartFile file1,
+                         MultipartFile file2,MultipartFile file3,MultipartFile file4,MultipartFile file5,MultipartFile file6,MultipartFile file7,MultipartFile file8,MultipartFile file9,MultipartFile file10,MultipartFile file11,MultipartFile file12,MultipartFile file13,MultipartFile file14,MultipartFile file15,MultipartFile file16,MultipartFile file17,MultipartFile file18,MultipartFile file19,MultipartFile file20,MultipartFile file21,MultipartFile file22,MultipartFile file23,MultipartFile file24,MultipartFile file25,MultipartFile file26,MultipartFile file27,MultipartFile file28,MultipartFile file29,MultipartFile file30
+            , @AuthenticationPrincipal PrincipalDetails userDetails, Model model) throws Exception {
+        User user = userDetails.getUser();
+        String userEmail = user.getEmail();
+        int idx = userEmail.indexOf("@");
+        String mail = userEmail.substring(0, idx);
+        List<MultipartFile> files = new ArrayList<>();
+        files.add(file1);files.add(file2);files.add(file3);files.add(file4);files.add(file5);files.add(file6);files.add(file7);files.add(file8);files.add(file9);files.add(file10);files.add(file11);files.add(file12);files.add(file13);files.add(file14);files.add(file15);files.add(file16);files.add(file17);files.add(file18);files.add(file19);files.add(file20);files.add(file21);files.add(file22);files.add(file23);files.add(file24);files.add(file25);files.add(file26);files.add(file27);files.add(file28);files.add(file29);files.add(file30);
 
-        return "redirect:/board/list";
-    }
+        List<Image> images = new ArrayList<>();
+        for(int i=0; i<files.size(); i++){
 
-    // 게시물 삭제는 deletePost 메서드를 사용하여 간단하게 삭제할 수 있다.
+            //유입 된 값이 null이 아닌 것만 update치면 된다.
+            if(!files.get(i).getOriginalFilename().isEmpty()) {
 
-    @DeleteMapping("/post/{no}")
-    public String delete(@PathVariable("no") Long no) {
-        boardService.deletePost(no);
+                Image img = imageService.getImage(i, files.get(i), mail);
+                user.addImage(img);
+                images.add(img);
+            }
+        }
+        imageService.saveAll(images);
 
-        return "redirect:/board/list";
-    }
-
-    // 검색
-    // keyword를 view로부터 전달 받고
-    // Service로부터 받은 boardDtoList를 model의 attribute로 전달해준다.
-
-    @GetMapping("/board/search")
-    public String search(@RequestParam(value="keyword") String keyword, Model model) {
-        List<BoardDto> boardDtoList = boardService.searchPosts(keyword);
-
-        model.addAttribute("boardList", boardDtoList);
-
-        return "board/list";
+        return "redirect:/complete";
     }
 }

@@ -39,4 +39,11 @@ public class MarryInfoService {
         //return marryInfoRepository.save(marryInfoDto.toEntity()).getId();
     }
 
+
+    @Transactional
+    public MarryInfo getMarryInfo(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(EntityNotFoundException::new);
+        MarryInfo marryInfo = user.getMarryInfo();
+        return marryInfo;
+    }
 }

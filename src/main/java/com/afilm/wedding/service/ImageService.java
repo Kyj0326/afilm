@@ -108,7 +108,7 @@ public class ImageService {
         imageRepository.saveAll(images);
     }
 
-    public Object findByUserId(Long id) {
+    public List<Image> findByUserId(Long id) {
       return imageRepository.findByUserId(id);
     }
 }

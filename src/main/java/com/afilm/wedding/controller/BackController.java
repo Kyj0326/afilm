@@ -2,6 +2,7 @@ package com.afilm.wedding.controller;
 
 import com.afilm.security.config.auth.PrincipalDetails;
 import com.afilm.security.model.User;
+import com.afilm.wedding.domain.Image;
 import com.afilm.wedding.dto.BoardDto;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -9,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -72,6 +74,19 @@ public class BackController {
         model.addAttribute("user", user);
 
         return "/imgupload";
+    }
+
+    //이미지 등록
+    @PostMapping("/img/upload")
+    public String saveImage(Image image, MultipartFile imgFile, @AuthenticationPrincipal PrincipalDetails userDetails, Model model) throws Exception {
+        User user = userDetails.getUser();
+
+
+       // imageService.saveImage(image, imgFile,user);
+
+        model.addAttribute("item",user.getImages());
+        return "redirect:/main";
+
     }
 
 
