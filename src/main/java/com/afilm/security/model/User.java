@@ -1,6 +1,6 @@
 package com.afilm.security.model;
 
-import com.afilm.wedding.domain.Images;
+import com.afilm.wedding.domain.Image;
 import com.afilm.wedding.domain.MarryInfo;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -35,14 +35,14 @@ public class User {
     private MarryInfo marryInfo;
 
     @OneToMany( mappedBy = "user" , fetch = FetchType.EAGER)
-    private List<Images> images = new ArrayList<>();
+    private List<Image> images = new ArrayList<>();
 
     public void setMarryInfo(MarryInfo marryInfo) {
         this.marryInfo = marryInfo;
         marryInfo.setUser(this);
     }
 
-    public void addImage(Images image){
+    public void addImage(Image image){
         this.getImages().add(image);
         image.setUser(this);
     }

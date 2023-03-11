@@ -4,7 +4,7 @@ import com.afilm.security.config.auth.PrincipalDetails;
 import com.afilm.security.model.User;
 import com.afilm.security.repository.UserRepository;
 import com.afilm.wedding.service.BoardService;
-import com.afilm.wedding.service.ImagesService;
+import com.afilm.wedding.service.ImageService;
 import com.afilm.wedding.service.MarryInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -32,7 +32,7 @@ public class IndexController {
     private MarryInfoService marryInfoService;
 
     @Autowired
-    private ImagesService itemService;
+    private ImageService itemService;
 
     @GetMapping("/test/login")
     public @ResponseBody String loginTest(
