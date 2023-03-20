@@ -13,7 +13,6 @@ import com.afilm.wedding.service.BoardService;
 import com.afilm.wedding.service.ImageService;
 import com.afilm.wedding.service.MarryInfoService;
 import lombok.AllArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -34,7 +33,6 @@ public class BoardController {
     private MarryInfoService marryInfoService;
     private ImageService imageService;
     private ImageRepository imageRepository;
-    private ModelMapper modelMapper;
     private UserRepository userRepository;
 
 
@@ -59,14 +57,14 @@ public class BoardController {
         return "redirect:/update";
     }
 
-    @GetMapping("/new")
+    @GetMapping({"", "/new"})
     public String newIndex(@AuthenticationPrincipal PrincipalDetails userDetails,
                         Model model) {
         User user = userDetails.getUser();
 
         model.addAttribute("user", user);
 
-        return "new_index";
+        return "/new_index";
     }
 
     @GetMapping("/update")
@@ -79,8 +77,9 @@ public class BoardController {
         model.addAttribute("marryInfo", marryInfo);
 
         model.addAttribute("user", user);
+        System.out.println("marryInfo####### : " + marryInfo);
 
-        return "update_index";
+        return "/update_index";
     }
 
 
@@ -141,11 +140,11 @@ public class BoardController {
                 images.add(img);
             }
         imageService.saveAll(images);
-        return "redirect:/complete";
+        return "redirect:/end";
     }
 
 
-    @GetMapping("/complete")
+    @GetMapping("/end")
     public String getImages(@AuthenticationPrincipal PrincipalDetails userDetails,
                        Model model){
         User user = userDetails.getUser();
@@ -179,6 +178,6 @@ public class BoardController {
         }
         imageService.saveAll(images);
 
-        return "redirect:/complete";
+        return "redirect:/end";
     }
 }

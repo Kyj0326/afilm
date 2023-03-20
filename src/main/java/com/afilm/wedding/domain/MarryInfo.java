@@ -24,7 +24,7 @@ public class MarryInfo {
     private String marryDate;
 
 
-    @OneToOne(mappedBy = "marryInfo", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "marryInfo", fetch = FetchType.EAGER)
     private User user;
 
     @Builder

@@ -50,72 +50,41 @@
 
             <ul class="nav nav-tabs">
                 <li class="nav-item">
-                    <a class="nav-link active" data-toggle="tab" href="#qwe">Step 1 - 기본정보 입력</a>
+                    <a class="nav-link disabled" data-toggle="tab" >Step 1 - 기본정보 입력</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link disabled" data-toggle="tab" >Step 2 - 사진 업로드</a>
+                    <a class="nav-link active" data-toggle="tab" href="#asd">Step 2 - 사진 업로드</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link disabled" data-toggle="tab" >Step 3 - 완료</a>
                 </li>
             </ul>
             <div class="tab-content">
-                <div class="tab-pane fade show active" id="qwe">
-                    <br>
-                    <div class="row">
-
-                            <video class="col-md-8 order-md-1 mb-4" controls poster="/file/test.png" >
-
-                                <source src="/file/test.mp4" type="video/mp4">
-                                <strong>Your browser does not support the video tag.</strong>
-                            </video>
+                <div class="tab-pane fade" id="qwe">
 
 
-                            <div class="col-md-4 order-md-2">
-                                <form th:action="@{/marry-info}" method="post">
-                                    <br>
-                                    <br>
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label for="mailName">신랑 이름</label>
-                                            <input type="title" class="form-control" id="mailName" name="mailName" placeholder="_ _ _ _"/>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label for="femaleName">신부 이름 </label>
-                                            <input type="title" class="form-control" id="femaleName" name="femaleName" placeholder="_ _ _ _"/>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label for="info_1">부가 정보1</label>
-                                            <input type="title" class="form-control" id="info_1" name="info_1" placeholder="_ _ _ _"/>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label for="info_1">부가 정보2</label>
-                                            <input type="title" class="form-control" id="info_2" name="info_2" placeholder="_ _ _ _"/>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12 mb-3">
-                                            <label for="marryDate" class="col-sm-12 control-label">결혼식 일시</label>
-                                            <input type="datetime-local" class="form-control" id="marryDate" name="marryDate" placeholder="_ _ _ _"/>
-                                        </div>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary float-right">다음단계</button>
-                                </form>
-                            </div>
 
-                    </div>
-
-
+<!--                <tr th:each="board : ${boardList}">-->
+<!--                    <td th:text="${board.id}"></td>-->
+<!--                    <td><a th:href="'/board/post/'+${board.id}" th:text="${board.title}"></a></td>-->
+<!--                    <td th:text="${board.writer}"></td>-->
+<!--                    <td th:text="${board.createdDate} ? ${#temporals.format(board.createdDate,'yyyy-MM-dd HH:mm')} : ${board.createdDate}"></td>-->
+<!--                    <td th:text="${board.modifiedDate} ? ${#temporals.format(board.modifiedDate,'yyyy-MM-dd HH:mm')} : ${board.modifiedDate}"></td>-->
+<!--                </tr>-->
 
                 </div>
-                <div class="tab-pane fade" id="asd">
+                <div class="tab-pane fade show active" id="asd">
                     <div class="container">
-                        <div id="main_list" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                        <form th:action="@{/imgs/upload}" method="post" enctype="multipart/form-data">
+<!--                            <tr th:each="image : ${images}">-->
+                                <div id="main_list" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
 
-                        </div>
+                                </div>
+<!--                            </tr>-->
+                            <button type="submit" class="btn btn-primary float-right">다음단계</button>
+                        </form>
                     </div>
+
                 </div>
 
 
@@ -133,7 +102,7 @@
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 <script>
 
-    $(document).ready(function(){
+   $(document).ready(function(){
 
         for(var i=1; i<31; i++){
             var template = ""
@@ -146,7 +115,7 @@
                         +  "<div class=\"card-body\">"
                         +  "<div class=\"filebox\">"
                         +  "<label for=\"file"+i+"\" id=\"addfile\">이미지 첨부</label>"
-                        +  "<input type=\"file\" id=\"file"+i+"\" class=\"upload-hidden-"+i+"\" name=\"file\">"
+                        +  "<input type=\"file\" id=\"file"+i+"\" class=\"upload-hidden-"+i+"\" name=\"file"+i+"\">"
                         +   "</div>"
                         +  "</div>"
                         +  "</div>" ;

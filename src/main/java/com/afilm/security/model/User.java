@@ -31,7 +31,7 @@ public class User {
     private Timestamp createDate;
 
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private MarryInfo marryInfo;
 
     @OneToMany( mappedBy = "user" , fetch = FetchType.EAGER)
