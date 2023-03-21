@@ -44,15 +44,18 @@ spring:
     livereload:
       enabled: true
 
-  logging:
-    level:
-      org:
-        hibernate:
-          SQL: DEBUG
-          type:
-            descriptor:
-              sql:
-                BasicBinder: TRACE
+logging:
+  level:
+    root: debug
+
+#        hibernate:
+#          SQL: DEBUG
+#          type:
+#            descriptor:
+#              sql:
+#                BasicBinder: TRACE
+#        springframework:
+#          web: DEBUG
 
 #파일 사이즈 관리
   servlet:

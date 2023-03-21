@@ -94,7 +94,9 @@ public class BoardController {
     @PutMapping("/marry-info")
     public String updateMarryInfo(MarryInfoDto marryInfoDto, @AuthenticationPrincipal PrincipalDetails userDetails) {
         User user = userDetails.getUser();
+        System.out.println("#####user.getUsername() : " + user.getUsername());
         marryInfoService.savePost(marryInfoDto,user.getId());
+
         return "redirect:/imgupload_update";
     }
 
@@ -102,6 +104,7 @@ public class BoardController {
     public String uploadimg(@AuthenticationPrincipal PrincipalDetails userDetails,
                             Model model){
         User user = userDetails.getUser();
+
         model.addAttribute("user", user);
         return "/img_upload_new";
     }
@@ -113,6 +116,9 @@ public class BoardController {
         User user = userDetails.getUser();
 
         List<Image> images = imageService.findByUserId(user.getId());
+
+        System.out.println("#####images.get(0).getImgPath() : " + images.get(0).getImgPath());
+        System.out.println("#####images.get(1).getImgPath() : " + images.get(1).getImgPath());
 
         model.addAttribute("images", images);
 
